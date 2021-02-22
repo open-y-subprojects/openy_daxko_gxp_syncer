@@ -65,11 +65,13 @@ class Cleaner {
     $query = $mappingStorage->getQuery();
     $query->condition('gxpid', $schedulesIds, 'NOT IN');
     $ids = $query->execute();
-    $msg = 'There are %total sessions which do not exist in api, trying to delete its from database.';
-    $this->logger->debug($msg, [
-      '%total' => count($ids),
-    ]);
-    $this->mappingRepository->deleteMappingByIds($ids);
+    if (count($ids) > 0) {
+      $msg = '[CLEANER] There are %total sessions which do not exist in api, trying to delete its from database.';
+      $this->logger->debug($msg, [
+        '%total' => count($ids),
+      ]);
+      $this->mappingRepository->deleteMappingByIds($ids);
+    }
 
     // Check to existing schedules.
     $query = $mappingStorage->getQuery();
@@ -91,9 +93,9 @@ class Cleaner {
         $schedulesToUpdate[$schedule['id']] = $schedule;
       }
     }
-    $msg = 'There are %total sessions to create.';
+    $msg = '[CLEANER] There are %total sessions to create.';
     $this->logger->debug($msg, ['%total' => count($schedulesToCreate)]);
-    $msg = 'There are %total sessions to update.';
+    $msg = '[CLEANER] There are %total sessions to update.';
     $this->logger->debug($msg, ['%total' => count($schedulesToUpdate)]);
     // Set data to create new Sessions.
     $this->wrapper->setSchedulesToCreate($schedulesToCreate);

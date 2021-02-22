@@ -65,7 +65,7 @@ class Fetcher {
     $fetchDays = $this->config->get('fetch_days');
     $end->modify('+' . $fetchDays . ' day');
 
-    $this->logger->notice('Fetch data from daxko groupex api. Begin date: %start, End date: %end', [
+    $this->logger->notice('[FETCHER] Fetch data from daxko groupex api. Begin date: %start, End date: %end', [
       '%start' => $begin->format('Y-m-d'),
       '%end' => $end->format('Y-m-d'),
     ]);
@@ -75,7 +75,7 @@ class Fetcher {
     $data = [];
     /** @var \DateTime $date */
     foreach ($locations as $locationid) {
-      $msg = 'Trying to get data for location %title with groupex id %id';
+      $msg = '[FETCHER] Trying to get data for location %title with groupex id %id';
       $this->logger->debug($msg, [
         '%title' => $locationsMapping[$locationid]['title'],
         '%id' => $locationid,
@@ -85,7 +85,7 @@ class Fetcher {
         $end->format('Y-m-d'),
         $locationid
       );
-      $msg = 'Location %title with groupex id %id has %count schedules.';
+      $msg = '[FETCHER] Location %title with groupex id %id has %count schedules.';
 
       $this->logger->debug($msg, [
         '%title' => $locationsMapping[$locationid]['title'],
@@ -96,7 +96,7 @@ class Fetcher {
         $data = array_merge($data, $gxpData);
       }
     }
-    $this->logger->debug('There are %total schedules from api for processing', [
+    $this->logger->debug('[FETCHER] There are %total schedules from api for processing', [
       '%total' => count($data),
     ]);
     $this->wrapper->addSchedules($data);

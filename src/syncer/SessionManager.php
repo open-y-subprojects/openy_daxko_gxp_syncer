@@ -64,7 +64,11 @@ class SessionManager {
    */
   public function createSessions() {
     $data = $this->wrapper->getSchedulesToCreate();
-    $this->logger->notice('Trying to create sessions.');
+    if (count($data) == 0) {
+      $this->logger->notice('[SESSIONMANGER] Nothing to create.');
+      return;
+    }
+    $this->logger->notice('[SESSIONMANGER] Trying to create sessions.');
     $total = count($data);
     $current = 1;
     foreach ($data as $scheduleData) {
@@ -75,7 +79,7 @@ class SessionManager {
         $scheduleData['id'],
         $scheduleData['hash']
       );
-      $msg = 'Created session %id|%title with Daxko id %gxpid. Step %step from %total';
+      $msg = '[SESSIONMANGER] Created session %id|%title with Daxko id %gxpid. Step %step from %total';
       $this->logger->debug($msg, [
         '%id' => $session->id(),
         '%title' => $scheduleData['name'],
@@ -86,10 +90,9 @@ class SessionManager {
       $current += 1;
     }
     if (count($data) > 0) {
-      $this->logger->notice('%total sessions was created.', ['%total' => count($data)]);
+      $this->logger->notice('[SESSIONMANGER] %total sessions was created.', ['%total' => count($data)]);
       return;
     }
-    $this->logger->notice('Nothing to create.');
   }
 
   /**
@@ -97,12 +100,16 @@ class SessionManager {
    */
   public function updateSessions() {
     $data = $this->wrapper->getSchedulesToUpdate();
-    $this->logger->notice('Trying to update sessions.');
+    if (count($data) == 0) {
+      $this->logger->notice('[SESSIONMANGER] Nothing to update.');
+      return;
+    }
+    $this->logger->notice('[SESSIONMANGER] Trying to update sessions.');
     $total = count($data);
     $current = 1;
     foreach ($data as $scheduleData) {
       $session = $this->updateSession($scheduleData);
-      $msg = 'Updated session %id|%title with Daxko id %gxpid. Step %step from %total';
+      $msg = '[SESSIONMANGER] Updated session %id|%title with Daxko id %gxpid. Step %step from %total';
       $this->logger->debug($msg, [
         '%id' => $session->id(),
         '%title' => $scheduleData['name'],
@@ -113,10 +120,9 @@ class SessionManager {
       $current += 1;
     }
     if (count($data) > 0) {
-      $this->logger->notice('%total sessions was updated.', ['%total' => count($data)]);
+      $this->logger->notice('[SESSIONMANGER] %total sessions was updated.', ['%total' => count($data)]);
       return;
     }
-    $this->logger->notice('Nothing to update.');
   }
 
   /**
@@ -176,7 +182,7 @@ class SessionManager {
       $mapping->save();
       return $session;
     }
-    $msg = 'Can`t update session, check Daxko Grpuex API for changes. Data: %data';
+    $msg = '[SESSIONMANGER] Can`t update session, check Daxko Grpuex API for changes. Data: %data';
     $this->logger->warning($msg, ['%data' => json_encode($scheduleData)]);
   }
 

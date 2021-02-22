@@ -72,7 +72,7 @@ class DaxkoGroupexMappingRepository {
    */
   public function deleteMapping() {
     $ids = $this->storage->getQuery()->execute();
-    $this->logger->notice('Trying to remove all sessions from Daxko Groupex Mapping.');
+    $this->logger->notice('[REPOSITORY] Trying to remove all sessions from Daxko Groupex Mapping.');
     $this->deleteMappingByIds($ids);
   }
 
@@ -90,7 +90,7 @@ class DaxkoGroupexMappingRepository {
     $step = 1;
     foreach ($chunks as $chunk) {
       $entities = $this->storage->loadMultiple($chunk);
-      $msg = 'Step %step from %steps for delete sessions from database. Total sessions: %total Left: %left';
+      $msg = '[REPOSITORY] Step %step from %steps for delete sessions from database. Total sessions: %total Left: %left';
       $this->logger->debug($msg, [
         '%step' => $step,
         '%steps' => $steps,
@@ -106,7 +106,7 @@ class DaxkoGroupexMappingRepository {
       }
       $left -= count($chunk);
     }
-    $msg = 'There are %total sessions was deleted from database.';
+    $msg = '[REPOSITORY] There are %total sessions was deleted from database.';
     $this->logger->notice($msg, [
       '%total' => $total,
     ]);

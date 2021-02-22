@@ -1,0 +1,12 @@
+client_id: ''
+client_secret: ''
+scope: "GXP_3"
+grant_type: "client_credentials"
+auth_url: "https://api.partners.daxko.com/auth/token"
+api_url: "https://api.partners.daxko.com/api/v1/"
+fetch_days: 14
+reservation_url: "https://www.groupexpro.com/gxp/reservations/start/index/"
+reservation_text: REGISTER
+parrent_subprogram: 14171
+locations:
+  - 17

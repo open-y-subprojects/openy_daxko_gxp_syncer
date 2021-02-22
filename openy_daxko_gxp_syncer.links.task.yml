@@ -1,0 +1,18 @@
+entity.daxko_groupex_mapping.view:
+  title: View
+  route_name: entity.daxko_groupex_mapping.canonical
+  base_route: entity.daxko_groupex_mapping.canonical
+entity.daxko_groupex_mapping.edit_form:
+  title: Edit
+  route_name: entity.daxko_groupex_mapping.edit_form
+  base_route: entity.daxko_groupex_mapping.canonical
+entity.daxko_groupex_mapping.delete_form:
+  title: Delete
+  route_name: entity.daxko_groupex_mapping.delete_form
+  base_route: entity.daxko_groupex_mapping.canonical
+  weight: 10
+entity.daxko_groupex_mapping.collection:
+  title: Daxko GroupEx Mapping
+  route_name: entity.daxko_groupex_mapping.collection
+  base_route: system.admin_content
+  weight: 10

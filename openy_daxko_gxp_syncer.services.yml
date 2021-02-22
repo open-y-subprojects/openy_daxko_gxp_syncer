@@ -1,0 +1,68 @@
+services:
+  openy_daxko_gxp_syncer.cache:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory: cache_factory:get
+    arguments:
+      - 'openy_daxko_gxp_syncer'
+  config.openy_daxko_gxp_syncer.immutable:
+    class: \Drupal\Core\Config\ImmutableConfig
+    factory: config.factory:get
+    arguments:
+      - 'openy_daxko_gxp_syncer.settings'
+  logger.channel.openy_daxko_gxp_syncer:
+    parent: logger.channel_base
+    arguments: ['openy_daxko_gxp_syncer']
+  openy_daxko_gxp_syncer.client:
+    class: Drupal\openy_daxko_gxp_syncer\DaxkoGxpClient
+    arguments:
+      - '@http_client'
+      - '@config.factory'
+      - '@openy_daxko_gxp_syncer.cache'
+      - '@logger.channel.openy_daxko_gxp_syncer'
+  openy_daxko_gxp_syncer.fetch:
+    class: Drupal\openy_daxko_gxp_syncer\syncer\Fetcher
+    arguments:
+      - '@openy_daxko_gxp_syncer.client'
+      - '@openy_daxko_gxp_syncer.wrapper'
+  openy_daxko_gxp_syncer.wrapper:
+    class: Drupal\openy_daxko_gxp_syncer\syncer\Wrapper
+    arguments:
+      - '@config.openy_daxko_gxp_syncer.immutable'
+      - '@ymca_mappings.location_repository'
+      - '@logger.channel.openy_daxko_gxp_syncer'
+  openy_daxko_gxp_syncer.session_manager:
+    class: Drupal\openy_daxko_gxp_syncer\syncer\SessionManager
+    arguments:
+      - '@openy_daxko_gxp_syncer.wrapper'
+      - '@entity_type.manager'
+      - '@openy_daxko_gxp_syncer.mapping'
+      - '@config.factory'
+  openy_daxko_gxp_syncer.mapping:
+    class: Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingRepository
+    arguments:
+      - '@entity_type.manager'
+      - '@logger.channel.openy_daxko_gxp_syncer'
+  openy_daxko_gxp_syncer.cleaner:
+    class: Drupal\openy_daxko_gxp_syncer\syncer\Cleaner
+    arguments:
+      - '@openy_daxko_gxp_syncer.wrapper'
+      - '@openy_daxko_gxp_syncer.session_manager'
+  openy_daxko_gxp_syncer.syncer:
+    class: Drupal\ymca_sync\Syncer
+    arguments: []
+    calls:
+      - [addStep, ['@openy_daxko_gxp_syncer.fetch', 'fetch']]
+      - [addStep, ['@openy_daxko_gxp_syncer.cleaner', 'clean']]
+      - [addStep, ['@openy_daxko_gxp_syncer.session_manager', 'createSessions']]
+      - [addStep, ['@openy_daxko_gxp_syncer.session_manager', 'updateSessions']]
+    tags:
+      - { name: syncer }
+  openy_daxko_gxp_syncer.cleaner_all:
+    class: Drupal\ymca_sync\Syncer
+    arguments: []
+    calls:
+      - [addStep, ['@openy_daxko_gxp_syncer.mapping', 'deleteMapping']]
+    tags:
+      - { name: syncer }

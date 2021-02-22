@@ -180,6 +180,7 @@ class Wrapper {
         'title' => $branch->title->value,
       ];
     }
+    $this->locationMapping = $locationMapping;
     return $locationMapping;
   }
 

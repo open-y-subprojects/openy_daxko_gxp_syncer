@@ -149,9 +149,16 @@ class Wrapper {
         $schedule['reservationId'] = substr($schedule['id'], 0, -6);
       }
       // Conver datetime.
-      $schedule['startDateTime'] = new \DateTime($schedule['startDateTime']);
+      $schedule['day'] = new \DateTime($schedule['startDateTime'], new \DateTimeZone('utc'));
+      $schedule['day']->setTimezone(new \DateTimeZone('America/Chicago'));
+      $schedule['day'] = strtolower($schedule['day']->format('l'));
+      $schedule['startDateTime'] = new \DateTime($schedule['startDateTime'], new \DateTimeZone('utc'));
+      // Fix for no display schedule by RepeateManager.
+      $schedule['startDateTime']->modify('-6 day');
       $schedule['startDateTime'] = $schedule['startDateTime']->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT);
-      $schedule['endDateTime'] = new \DateTime($schedule['endDateTime']);
+      $schedule['endDateTime'] = new \DateTime($schedule['endDateTime'], new \DateTimeZone('utc'));
+      // Fix for no display schedule by RepeateManager.
+      $schedule['endDateTime']->modify('+6 day');
       $schedule['endDateTime'] = $schedule['endDateTime']->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT);
 
       // Add hash for check changes in cleaner.

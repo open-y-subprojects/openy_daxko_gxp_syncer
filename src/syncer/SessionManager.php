@@ -163,8 +163,10 @@ class SessionManager {
 
     $sessionTime = $session->field_session_time->referencedEntities();
     $sessionTime = reset($sessionTime);
+    /** @var \Drupal\paragraphs\ParagraphInterface $sessionTime */
     $currentTimes = $sessionTime->field_session_time_date->getValue();
     $currentTimes = reset($currentTimes);
+    $currentDay = $sessionTime->field_session_time_days->value;
     if ($currentTimes['value'] != $scheduleData['startDateTime'] || $currentTimes['end_value'] != $scheduleData['endDateTime']) {
       $sessionTime->set('field_session_time_date',
         [
@@ -173,6 +175,10 @@ class SessionManager {
         ]
       );
       $sessionTime->save();
+      $isChange = TRUE;
+    }
+    if ($currentDay != $scheduleData['day']) {
+      $sessionTime->set('field_session_time_days', [$scheduleData['day']]);
       $isChange = TRUE;
     }
 
@@ -184,6 +190,7 @@ class SessionManager {
     }
     $msg = '[SESSIONMANGER] Can`t update session, check Daxko Grpuex API for changes. Data: %data';
     $this->logger->warning($msg, ['%data' => json_encode($scheduleData)]);
+    return $session;
   }
 
   /**
@@ -222,17 +229,9 @@ class SessionManager {
    * Create paragraphs with session time.
    */
   private function getSessionTime(array $scheduleData) {
-    $days = [
-      'monday',
-      'tuesday',
-      'wednesday',
-      'thursday',
-      'friday',
-      'saturday',
-      'sunday',
-    ];
+    $paragraphs = [];
     $paragraph = Paragraph::create(['type' => 'session_time']);
-    $paragraph->set('field_session_time_days', $days);
+    $paragraph->set('field_session_time_days', [$scheduleData['day']]);
     $paragraph->set('field_session_time_date',
       [
         'value' => $scheduleData['startDateTime'],

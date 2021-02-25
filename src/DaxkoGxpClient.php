@@ -55,6 +55,8 @@ class DaxkoGxpClient {
 
   /**
    * Get access token to API.
+   *
+   * @see https://docs.partners.daxko.com/tutorials/authentication/
    */
   public function getAccessToken() {
     if ($cache = $this->cache->get(self::CACHE_PREFIX . 'access_token')) {
@@ -102,6 +104,7 @@ class DaxkoGxpClient {
    *   End date period range.
    * @param int $locationId
    *   GXP location id.
+   * @see https://docs.partners.daxko.com/openapi/gxp/#operation/get-class-details
    */
   public function getSchedules($startDate, $endDate, $locationId) {
     $queryParams = [
@@ -116,6 +119,38 @@ class DaxkoGxpClient {
     ];
     $queryStr = http_build_query($queryParams);
     $url = $this->config->get('api_url') . 'classes?' . $queryStr;
+    $json = [];
+    try {
+      $response = $this->client->get($url, $options);
+      $body = $response->getBody();
+      $content = $body->getContents();
+      $json = json_decode($content, TRUE, JSON_THROW_ON_ERROR);
+      if (!$json) {
+        $json = [];
+      }
+    }
+    catch (\Exception $e) {
+      $this->logger->error($e);
+      return [];
+    }
+
+    return $json;
+  }
+
+  /**
+   * Get schedule datails.
+   *
+   * @param string $daxkoId
+   *   The ID of the schedule.
+   * @see https://docs.partners.daxko.com/openapi/gxp/#operation/get-class-details-by-id
+   */
+  public function getScheduleDetails($daxkoId) {
+    $options = [
+      'headers' => [
+        'Authorization' => "Bearer " . $this->getAccessToken(),
+      ],
+    ];
+    $url = $this->config->get('api_url') . 'classes/' . $daxkoId;
     $json = [];
     try {
       $response = $this->client->get($url, $options);

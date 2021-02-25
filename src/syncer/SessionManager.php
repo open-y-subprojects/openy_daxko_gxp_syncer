@@ -77,7 +77,9 @@ class SessionManager {
         $session,
         $scheduleData['locationId'],
         $scheduleData['id'],
-        $scheduleData['hash']
+        $scheduleData['hash'],
+        $scheduleData['reservable'],
+        $scheduleData['day']
       );
       $msg = '[SESSIONMANGER] Created session %id|%title with Daxko id %gxpid. Step %step from %total';
       $this->logger->debug($msg, [
@@ -133,6 +135,7 @@ class SessionManager {
     $mapping = $this->mappingRepository->loadByGxpId($scheduleData['id']);
     $session = $mapping->session->referencedEntities();
     $session = reset($session);
+    /** @var \Drupal\Node\Entity\Node $session */
     $isChange = FALSE;
 
     if ($session->title->value != $scheduleData['name']) {
@@ -177,8 +180,31 @@ class SessionManager {
       $sessionTime->save();
       $isChange = TRUE;
     }
-    if ($currentDay != $scheduleData['day']) {
-      $sessionTime->set('field_session_time_days', [$scheduleData['day']]);
+    if ($currentDay != $scheduleData['weekDay']) {
+      $sessionTime->set('field_session_time_days', [$scheduleData['weekDay']]);
+      $isChange = TRUE;
+    }
+
+    if ($mapping->getDay() != $scheduleData['day']) {
+      $mapping->setDay($scheduleData['day']);
+      $isChange = TRUE;
+    }
+
+    if ($mapping->getReservable() != $scheduleData['reservable']) {
+      if ($scheduleData['reservable']) {
+        $mapping->isReservable();
+        $regLink = [
+          'uri' => $this->wrapper->config->get('reservation_url') . $scheduleData['reservationId'],
+          'title' => $this->wrapper->config->get('reservation_text'),
+        ];
+        $session->set('field_session_reg_link', $regLink);
+        $session->set('field_productid', $scheduleData['reservationId']);
+      }
+      else {
+        $mapping->unReservable();
+        $session->set('field_session_reg_link', NULL);
+        $session->set('field_productid', NULL);
+      }
       $isChange = TRUE;
     }
 
@@ -231,7 +257,7 @@ class SessionManager {
   private function getSessionTime(array $scheduleData) {
     $paragraphs = [];
     $paragraph = Paragraph::create(['type' => 'session_time']);
-    $paragraph->set('field_session_time_days', [$scheduleData['day']]);
+    $paragraph->set('field_session_time_days', [$scheduleData['weekDay']]);
     $paragraph->set('field_session_time_date',
       [
         'value' => $scheduleData['startDateTime'],

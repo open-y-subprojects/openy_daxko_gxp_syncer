@@ -49,6 +49,12 @@ services:
     arguments:
       - '@openy_daxko_gxp_syncer.wrapper'
       - '@openy_daxko_gxp_syncer.session_manager'
+  openy_daxko_gxp_syncer.availability:
+    class: Drupal\openy_daxko_gxp_syncer\syncer\Availability
+    arguments:
+      - '@openy_daxko_gxp_syncer.client'
+      - '@openy_daxko_gxp_syncer.wrapper'
+      - '@openy_daxko_gxp_syncer.session_manager'
   openy_daxko_gxp_syncer.syncer:
     class: Drupal\ymca_sync\Syncer
     arguments: []
@@ -64,5 +70,12 @@ services:
     arguments: []
     calls:
       - [addStep, ['@openy_daxko_gxp_syncer.mapping', 'deleteMapping']]
+    tags:
+      - { name: syncer }
+  openy_daxko_gxp_syncer.availability_sync:
+    class: Drupal\ymca_sync\Syncer
+    arguments: []
+    calls:
+      - [addStep, ['@openy_daxko_gxp_syncer.availability', 'updateAvailability']]
     tags:
       - { name: syncer }

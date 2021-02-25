@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @file
+ * Main module's file.
+ */
+
+/**
+ * Implements hook_openy_repeat_results_alter().
+ */
+function openy_daxko_gxp_syncer_openy_repeat_results_alter(&$results, $request, $date = NULL) {
+  if (empty($results)) {
+    return;
+  }
+  /** @var \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingRepository $mappingRepository*/
+  $mappingRepository = \Drupal::service('openy_daxko_gxp_syncer.mapping');
+  $storage = $mappingRepository->getStorage();
+  $query = $storage->getQuery();
+  $sessionIds = [];
+  foreach ($results as $schedule) {
+    if (empty($schedule->productid)) {
+      continue;
+    }
+    $sessionIds[] = $schedule->nid;
+  }
+  $query->condition('session', $sessionIds, 'IN');
+  $mappingIds = $query->execute();
+  $mappings = $mappingRepository->loadMultiple($mappingIds);
+  foreach ($mappings as $mapping) {
+    /** @var \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface $mapping */
+    foreach ($results as &$schedule) {
+      if (empty($schedule->productid)) {
+        continue;
+      }
+      if ($schedule->nid == $mapping->session->target_id) {
+        $schedule->spottext = $mapping->getAvailabilty();
+      }
+    }
+  }
+}

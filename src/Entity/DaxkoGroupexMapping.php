@@ -95,6 +95,59 @@ class DaxkoGroupexMapping extends ContentEntityBase implements DaxkoGroupexMappi
   /**
    * {@inheritdoc}
    */
+  public function getDay() {
+    return $this->get('day')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setDay($day) {
+    $this->set('day', $day);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getAvailabilty() {
+    return $this->get('availabilty')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setAvailabilty($text) {
+    $this->set('availabilty', $text);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getReservable() {
+    return $this->get('reservable')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isReservable() {
+    $this->set('reservable', TRUE);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function unReservable() {
+    $this->set('reservable', FALSE);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getSession() {
     $session = $this->session->referencedEntities();
     $session = reset($session);
@@ -167,6 +220,52 @@ class DaxkoGroupexMapping extends ContentEntityBase implements DaxkoGroupexMappi
       ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
+
+    $fields['day'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Day'))
+      ->setDescription(t('Day when display schedule'))
+      ->setRequired(TRUE)
+      ->setSettings([
+        'default_value' => '',
+        'max_length' => 32,
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'string',
+        'weight' => 1,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => 1,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['availabilty'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Availabilty'))
+      ->setDescription(t('Availabilty status for schedule'))
+      ->setRequired(TRUE)
+      ->setSettings([
+        'default_value' => '',
+        'max_length' => 32,
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'string',
+        'weight' => 1,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => 1,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['reservable'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Reservable'))
+      ->setDescription(t('Flag for reservable flag'))
+      ->setInitialValue(FALSE)
+      ->setDefaultValue(FALSE);
 
     $fields['hash'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Hash'))

@@ -68,6 +68,68 @@ interface DaxkoGroupexMappingInterface extends ContentEntityInterface {
   public function setLocationId($locationId);
 
   /**
+   * Gets the daxko groupex mapping day.
+   *
+   * @return string
+   *   Day in Y-m-d format.
+   */
+  public function getDay();
+
+  /**
+   * Sets the daxko groupex mapping day.
+   *
+   * @param string $day
+   *   Day in Y-m-d format.
+   *
+   * @return \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface
+   *   The called daxko groupex mapping entity.
+   */
+  public function setDay($day);
+
+  /**
+   * Gets the daxko groupex mapping reservable status.
+   *
+   * @return bolean
+   *   Reservable status.
+   */
+  public function getReservable();
+
+  /**
+   * Sets the daxko groupex mapping reservable.
+   *
+   * @return \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface
+   *   The called daxko groupex mapping entity.
+   */
+  public function isReservable();
+
+  /**
+   * Sets the daxko groupex mapping not reservable.
+   *
+   * @return \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface
+   *   The called daxko groupex mapping entity.
+   */
+  public function unReservable();
+
+  /**
+   * Gets the daxko groupex mapping availabilty status.
+   *
+   * @return string
+   *   Text of availabilty status.
+   */
+  public function getAvailabilty();
+
+  /**
+   * Sets the daxko groupex mapping availabilty status.
+   *
+   * @param string $text
+   *   Availabilty status text.
+   *
+   * @return \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface
+   *   The called daxko groupex mapping entity.
+   */
+  public function setAvailabilty($text);
+
+  /**
    * Gets the daxko groupex mapping session node.
    *
    * @return \Drupal\node\Entity\Node

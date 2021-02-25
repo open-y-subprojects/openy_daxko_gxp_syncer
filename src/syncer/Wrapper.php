@@ -149,9 +149,12 @@ class Wrapper {
         $schedule['reservationId'] = substr($schedule['id'], 0, -6);
       }
       // Conver datetime.
+      $schedule['weekDay'] = new \DateTime($schedule['startDateTime'], new \DateTimeZone('utc'));
+      $schedule['weekDay']->setTimezone(new \DateTimeZone('America/Chicago'));
+      $schedule['weekDay'] = strtolower($schedule['weekDay']->format('l'));
       $schedule['day'] = new \DateTime($schedule['startDateTime'], new \DateTimeZone('utc'));
       $schedule['day']->setTimezone(new \DateTimeZone('America/Chicago'));
-      $schedule['day'] = strtolower($schedule['day']->format('l'));
+      $schedule['day'] = $schedule['day']->format('Y-m-d');
       $schedule['startDateTime'] = new \DateTime($schedule['startDateTime'], new \DateTimeZone('utc'));
       // Fix for no display schedule by RepeateManager.
       $schedule['startDateTime']->modify('-6 day');

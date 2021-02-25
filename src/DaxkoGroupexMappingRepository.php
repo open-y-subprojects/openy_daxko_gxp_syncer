@@ -170,13 +170,17 @@ class DaxkoGroupexMappingRepository {
    * @return \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMapping
    *   Daxko Groupex Mapping entity.
    */
-  public function create(Node $session, string $locationId, string $gxpId, string $hash) {
+  public function create(Node $session, string $locationId, string $gxpId, string $hash, $reservable, $day) {
     /** @var \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface $mapping */
     $mapping = $this->storage->create();
     $mapping->setSession($session);
     $mapping->setLocationId($locationId);
     $mapping->setGxpId($gxpId);
     $mapping->setHash($hash);
+    if ($reservable) {
+      $mapping->isReservable();
+    }
+    $mapping->setDay($day);
     $mapping->save();
     return $mapping;
   }

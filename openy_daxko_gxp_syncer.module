@@ -26,15 +26,17 @@ function openy_daxko_gxp_syncer_openy_repeat_results_alter(&$results, $request, 
   $query->condition('session', $sessionIds, 'IN');
   $mappingIds = $query->execute();
   $mappings = $mappingRepository->loadMultiple($mappingIds);
+  $mappingNormalize = [];
   foreach ($mappings as $mapping) {
     /** @var \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface $mapping */
-    foreach ($results as &$schedule) {
-      if (empty($schedule->productid)) {
-        continue;
-      }
-      if ($schedule->nid == $mapping->session->target_id) {
-        $schedule->spottext = $mapping->getAvailabilty();
-      }
+    $mappingNormalize[$mapping->session->target_id] = $mapping->getAvailabilty();
+  }
+  foreach ($results as &$schedule) {
+    if (empty($schedule->productid)) {
+      continue;
+    }
+    if (isset($mappingNormalize[$schedule->nid])) {
+      $schedule->spottext = $mappingNormalize[$schedule->nid];
     }
   }
 }

@@ -214,7 +214,7 @@ class SessionManager {
       $mapping->save();
       return $session;
     }
-    $msg = '[SESSIONMANGER] Can`t update session, check Daxko Grpuex API for changes. Data: %data';
+    $msg = '[SESSIONMANGER] Can`t update session, check Daxko Groupex API for changes and ensure that update logic for created field exist in updateSession. Data: %data';
     $this->logger->warning($msg, ['%data' => json_encode($scheduleData)]);
     return $session;
   }

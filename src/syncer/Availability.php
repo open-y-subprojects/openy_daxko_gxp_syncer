@@ -68,12 +68,17 @@ class Availability {
    * Actualizate availability data.
    */
   public function updateAvailability() {
-    $this->logger->info('Start update avalability for schedules');
+    $this->logger->info('[AVAILABILITY] Start update avalability for schedules');
     $begin = new \DateTime('now');
     $begin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
 
     $end = clone $begin;
     $end->modify('+3 day');
+
+    $goal = clone $end;
+    $goal->modify('-1 day');
+    $goal = $goal->format('Y-m-d');
+
     $interval = new \DateInterval('P1D');
     $daterange = new \DatePeriod($begin, $interval, $end);
 
@@ -84,16 +89,40 @@ class Availability {
       $query->condition('day', $date);
       $query->condition('reservable', TRUE);
       $ids = $query->execute();
+      $total = count($ids);
+      $current = 1;
       $mappings = $this->mappingRepository->loadMultiple($ids);
+      if ($total == 0) {
+        $msg = '[AVAILABILITY] Reservable schedules not exist on %date in mapping, continue.';
+        $this->logger->info($msg, [
+          '%date' => $date,
+        ]);
+        continue;
+      }
       foreach ($mappings as $mapping) {
+        $msg = '[AVAILABILITY] Sync %date, goal %end. Try to get info for class %id. Step %step from %total';
+        $this->logger->info($msg, [
+          '%id' => $mapping->getGxpId(),
+          '%date' => $date,
+          '%end' => $goal,
+          '%step' => $current,
+          '%total' => $total,
+        ]);
+        $current += 1;
         /** @var \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface $mapping */
         $scheduleDetails = $this->client->getScheduleDetails($mapping->getGxpId());
         if (!isset($scheduleDetails["brief"])) {
+          $msg = '[AVAILABILITY] Unexpected schedule data from api for %id on date %date. Data %data';
+          $this->logger->warning($msg, [
+            '%id' => $mapping->getGxpId(),
+            '%date' => $date,
+            '%data' => serialize($scheduleDetails),
+          ]);
           continue;
         }
         if (!$scheduleDetails["brief"]["reservable"]) {
-          $msg = 'Schedule %id not more reservable. wait for openy_daxko_gxp_syncer.syncer to update session';
-          $this->logger->info($msg, ['%id' => $scheduleDetails["brief"]["id"]]);
+          $msg = '[AVAILABILITY] Schedule %id not more reservable. wait for openy_daxko_gxp_syncer.syncer to update session';
+          $this->logger->info($msg, ['%id' => $mapping->getGxpId()]);
           continue;
         }
         $booking = $scheduleDetails["bookingDetails"];
@@ -108,13 +137,19 @@ class Availability {
           $availabilityStatus = 'waitlist only';
         }
         if ($mapping->getAvailabilty() != $availabilityStatus) {
+          $oldValue = $mapping->getAvailabilty();
           $mapping->setAvailabilty($availabilityStatus);
           $mapping->save();
-          $this->logger->info('Avalability for mapping %id on date %date updated', ['%id' => $mapping->id(), '%date' => $date]);
+          $this->logger->info('[AVAILABILITY] Schedule %id on date %date updated. Old: "%oldValue", New: "%newValue"', [
+            '%id' => $mapping->getGxpId(),
+            '%date' => $date,
+            '%newValue' => $availabilityStatus,
+            '%oldValue' => (string) $oldValue,
+          ]);
         }
       }
     }
-    $this->logger->info('End update avalability for schedules');
+    $this->logger->info('[AVAILABILITY] End update avalability for schedules');
   }
 
 }

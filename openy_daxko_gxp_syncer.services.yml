@@ -30,7 +30,7 @@ services:
     class: Drupal\openy_daxko_gxp_syncer\syncer\Wrapper
     arguments:
       - '@config.openy_daxko_gxp_syncer.immutable'
-      - '@ymca_mappings.location_repository'
+      - '@openy_mappings.location_repository'
       - '@logger.channel.openy_daxko_gxp_syncer'
   openy_daxko_gxp_syncer.session_manager:
     class: Drupal\openy_daxko_gxp_syncer\syncer\SessionManager

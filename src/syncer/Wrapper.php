@@ -5,7 +5,7 @@ namespace Drupal\openy_daxko_gxp_syncer\syncer;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
-use Drupal\ymca_mappings\LocationMappingRepository;
+use Drupal\openy_mappings\LocationMappingRepository;
 
 /**
  * Enrich and normilize data from daxko groupex api for create sessions.
@@ -24,7 +24,7 @@ class Wrapper {
   /**
    * Location Mapping repository.
    *
-   * @var \Drupal\ymca_mappings\LocationMappingRepository
+   * @var \Drupal\openy_mappings\LocationMappingRepository
    */
   protected $locationRepository;
 

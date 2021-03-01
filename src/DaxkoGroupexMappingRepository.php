@@ -73,6 +73,10 @@ class DaxkoGroupexMappingRepository {
   public function deleteMapping() {
     $ids = $this->storage->getQuery()->execute();
     $this->logger->notice('[REPOSITORY] Trying to remove all sessions from Daxko Groupex Mapping.');
+    if (empty($ids)) {
+      $this->logger->notice('[REPOSITORY] Nothing to delete, repository is empty.');
+      return;
+    }
     $this->deleteMappingByIds($ids);
   }
 

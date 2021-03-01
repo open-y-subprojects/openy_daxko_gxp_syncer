@@ -159,7 +159,7 @@ class SessionManager {
 
     $class = $session->field_session_class->referencedEntities();
     $class = reset($class);
-    if ($class->title->value != $scheduleData['name']) {
+    if ($class->title->value != $scheduleData['activity']) {
       $session->set('field_session_class', $this->getClass($scheduleData));
       $isChange = TRUE;
     }
@@ -319,7 +319,7 @@ class SessionManager {
     // Try to find class.
     $existingClasses = $nodeStorage->getQuery()
       ->condition('type', 'class')
-      ->condition('title', $class['name'])
+      ->condition('title', $class['activity'])
       ->condition('field_class_activity', $activity->id())
       ->execute();
 
@@ -343,7 +343,7 @@ class SessionManager {
         'uid' => 1,
         'lang' => 'und',
         'type' => 'class',
-        'title' => $class['name'],
+        'title' => $class['activity'],
         'field_class_activity' => [
           [
             'target_id' => $activity->id(),

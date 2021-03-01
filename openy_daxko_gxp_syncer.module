@@ -23,6 +23,9 @@ function openy_daxko_gxp_syncer_openy_repeat_results_alter(&$results, $request, 
     }
     $sessionIds[] = $schedule->nid;
   }
+  if (empty($sessionIds)) {
+    return;
+  }
   $query->condition('session', $sessionIds, 'IN');
   $mappingIds = $query->execute();
   $mappings = $mappingRepository->loadMultiple($mappingIds);

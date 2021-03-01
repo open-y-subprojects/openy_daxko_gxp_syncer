@@ -73,7 +73,7 @@ class Availability {
     $begin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
 
     $end = clone $begin;
-    $end->modify('+3 day');
+    $end->modify('+' . $this->config->get('availability_days') . ' day');
 
     $goal = clone $end;
     $goal->modify('-1 day');

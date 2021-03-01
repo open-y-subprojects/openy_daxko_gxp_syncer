@@ -144,6 +144,10 @@ class Wrapper {
       $schedule['instructor'] = reset($schedule['instructor']);
       $schedule['activity'] = reset($schedule['activity']);
 
+      // Remove Â symbol.
+      $schedule['activity'] = str_replace('Â', '', $schedule['activity']);
+      $schedule['name'] = str_replace('Â', '', $schedule['name']);
+
       // Get reservation id for schedule. Last 6 symbols in id is a date.
       if ($schedule['reservable']) {
         $schedule['reservationId'] = substr($schedule['id'], 0, -6);

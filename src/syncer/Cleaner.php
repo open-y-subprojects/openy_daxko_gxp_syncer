@@ -77,7 +77,7 @@ class Cleaner {
     $query = $mappingStorage->getQuery();
     $query->condition('gxpid', $schedulesIds, 'IN');
     $ids = $query->execute();
-    $mappingsEntity = $this->mappingRepository->loadMultiple($ids);
+    $mappingsEntity = $mappingStorage->loadMultiple($ids);
     $mapping = [];
     /** @var \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface $mappingEntity */
     foreach ($mappingsEntity as $mappingEntity) {

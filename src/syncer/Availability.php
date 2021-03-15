@@ -91,7 +91,7 @@ class Availability {
       $ids = $query->execute();
       $total = count($ids);
       $current = 1;
-      $mappings = $this->mappingRepository->loadMultiple($ids);
+      $mappings = $storage->loadMultiple($ids);
       if ($total == 0) {
         $msg = '[AVAILABILITY] Reservable schedules not exist on %date in mapping, continue.';
         $this->logger->info($msg, [

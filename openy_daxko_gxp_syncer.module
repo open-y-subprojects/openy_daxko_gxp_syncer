@@ -28,7 +28,7 @@ function openy_daxko_gxp_syncer_openy_repeat_results_alter(&$results, $request, 
   }
   $query->condition('session', $sessionIds, 'IN');
   $mappingIds = $query->execute();
-  $mappings = $mappingRepository->loadMultiple($mappingIds);
+  $mappings = $storage->loadMultiple($mappingIds);
   $mappingNormalize = [];
   foreach ($mappings as $mapping) {
     /** @var \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface $mapping */

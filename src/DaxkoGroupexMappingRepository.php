@@ -52,22 +52,6 @@ class DaxkoGroupexMappingRepository {
   }
 
   /**
-   * Get all mapping enities.
-   *
-   * @return array
-   *   Array of daxko_groupex_mapping entities.
-   */
-  public function getMapping() {
-    $ids = $this->storage->getQuery()->execute();
-    $chunks = array_chunk($ids, 50);
-    $result = [];
-    foreach ($chunks as $chunk) {
-      $result = array_merge($result, $this->storage->loadMultiple($chunk));
-    }
-    return $result;
-  }
-
-  /**
    * Delete all mapping and remove all groupex session.
    */
   public function deleteMapping() {
@@ -117,24 +101,6 @@ class DaxkoGroupexMappingRepository {
   }
 
   /**
-   * Loads mapping by ids.
-   *
-   * @param array $ids
-   *   Ids of Daxko Groupex Mapping.
-   *
-   * @return array
-   *   Array of Daxko Groupex Mapping entities.
-   */
-  public function loadMultiple(array $ids) {
-    $chunks = array_chunk($ids, self::CHUNK_SIZE);
-    $result = [];
-    foreach ($chunks as $chunk) {
-      $result = array_merge($result, $this->storage->loadMultiple($chunk));
-    }
-    return $result;
-  }
-
-  /**
    * Load mapping by groupex id.
    *
    * @param string $gxpId
@@ -170,6 +136,10 @@ class DaxkoGroupexMappingRepository {
    *   Unique id for schedules from Daxko API.
    * @param string $hash
    *   Hash of schedule data api.
+   * @param bool $reservable
+   *   Is reservable.
+   * @param string $day
+   *   Day in Y-m-d format.
    *
    * @return \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMapping
    *   Daxko Groupex Mapping entity.

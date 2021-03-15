@@ -160,12 +160,8 @@ class Wrapper {
       $schedule['day']->setTimezone(new \DateTimeZone('America/Chicago'));
       $schedule['day'] = $schedule['day']->format('Y-m-d');
       $schedule['startDateTime'] = new \DateTime($schedule['startDateTime'], new \DateTimeZone('utc'));
-      // Fix for no display schedule by RepeateManager.
-      $schedule['startDateTime']->modify('-6 day');
       $schedule['startDateTime'] = $schedule['startDateTime']->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT);
       $schedule['endDateTime'] = new \DateTime($schedule['endDateTime'], new \DateTimeZone('utc'));
-      // Fix for no display schedule by RepeateManager.
-      $schedule['endDateTime']->modify('+6 day');
       $schedule['endDateTime'] = $schedule['endDateTime']->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT);
 
       // Add hash for check changes in cleaner.

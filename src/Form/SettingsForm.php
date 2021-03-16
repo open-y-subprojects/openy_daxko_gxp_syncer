@@ -76,7 +76,7 @@ class SettingsForm extends ConfigFormBase {
     $config = $this->config('openy_daxko_gxp_syncer.settings');
 
     $locations = $this->mappingRepository->loadAllLocationsWithGroupExId();
-        // Build options list.
+    // Build options list.
     $options = [];
     foreach ($locations as $location_id => $nodeType) {
       $location_id = $nodeType->toArray();

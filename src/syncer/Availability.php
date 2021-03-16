@@ -68,9 +68,13 @@ class Availability {
    * Actualizate availability data.
    */
   public function updateAvailability() {
+    if ($this->config->get('enable_capacity_in_full_syncer')) {
+      $this->logger->info('Availability enabled in full syncer. Please disable enable_capacity_in_full_syncer setting and clean all sessions before use availability syncer.');
+      return;
+    }
     $this->logger->info('[AVAILABILITY] Start update avalability for schedules');
     $begin = new \DateTime('now');
-    $begin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+    $begin->setTimezone(new \DateTimeZone('America/Chicago'));
 
     $end = clone $begin;
     $end->modify('+' . $this->config->get('availability_days') . ' day');
@@ -100,6 +104,7 @@ class Availability {
         continue;
       }
       foreach ($mappings as $mapping) {
+        /** @var \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface $mapping */
         $msg = '[AVAILABILITY] Sync %date, goal %end. Try to get info for class %id. Step %step from %total';
         $this->logger->info($msg, [
           '%id' => $mapping->getGxpId(),
@@ -109,7 +114,6 @@ class Availability {
           '%total' => $total,
         ]);
         $current += 1;
-        /** @var \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface $mapping */
         $scheduleDetails = $this->client->getScheduleDetails($mapping->getGxpId());
         if (!isset($scheduleDetails["brief"])) {
           $msg = '[AVAILABILITY] Unexpected schedule data from api for %id on date %date. Data %data';

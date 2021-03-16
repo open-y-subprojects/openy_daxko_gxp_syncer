@@ -140,11 +140,13 @@ class DaxkoGroupexMappingRepository {
    *   Is reservable.
    * @param string $day
    *   Day in Y-m-d format.
+   * @param string $availabilityStatus
+   *   Availability status.
    *
    * @return \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMapping
    *   Daxko Groupex Mapping entity.
    */
-  public function create(Node $session, string $locationId, string $gxpId, string $hash, $reservable, $day) {
+  public function create(Node $session, string $locationId, string $gxpId, string $hash, bool $reservable, string $day, $availabilityStatus = NULL) {
     /** @var \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface $mapping */
     $mapping = $this->storage->create();
     $mapping->setSession($session);
@@ -155,6 +157,7 @@ class DaxkoGroupexMappingRepository {
       $mapping->isReservable();
     }
     $mapping->setDay($day);
+    $mapping->setAvailabilty($availabilityStatus);
     $mapping->save();
     return $mapping;
   }

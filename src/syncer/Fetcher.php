@@ -65,6 +65,8 @@ class Fetcher {
     $fetchDays = $this->config->get('fetch_days');
     $end->modify('+' . $fetchDays . ' day');
 
+    $enableCapacity = $this->config->get('enable_capacity_in_full_syncer');
+
     $this->logger->notice('[FETCHER] Fetch data from daxko groupex api. Begin date: %start, End date: %end', [
       '%start' => $begin->format('Y-m-d'),
       '%end' => $end->format('Y-m-d'),
@@ -83,7 +85,8 @@ class Fetcher {
       $gxpData = $this->client->getSchedules(
         $begin->format('Y-m-d'),
         $end->format('Y-m-d'),
-        $locationid
+        $locationid,
+        $enableCapacity
       );
       $msg = '[FETCHER] Location %title with groupex id %id has %count schedules.';
 

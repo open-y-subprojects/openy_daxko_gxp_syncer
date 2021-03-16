@@ -148,6 +148,25 @@ class Wrapper {
       $schedule['activity'] = str_replace('Â', '', $schedule['activity']);
       $schedule['name'] = str_replace('Â', '', $schedule['name']);
 
+      $schedule['availabilityStatus'] = NULL;
+      if ($schedule['reservable'] && $this->config->get('enable_capacity_in_full_syncer')) {
+        $availabilityStatus = 'class full';
+        $availability = $schedule["capacity"] - $schedule["booked"];
+        if ($availability > 0) {
+          $availabilityStatus = $availability . ' spots left';
+        }
+        $waitlist = $schedule["waitlistCapacity"] - $schedule["waitlistBooked"];
+        if ($waitlist > 0) {
+          // @todo disaplay waitlist availability.
+          $availabilityStatus = 'waitlist only';
+        }
+        $schedule['availabilityStatus'] = $availabilityStatus;
+        unset($schedule["capacity"]);
+        unset($schedule["booked"]);
+        unset($schedule["waitlistCapacity"]);
+        unset($schedule["waitlistBooked"]);
+      }
+
       // Get reservation id for schedule. Last 6 symbols in id is a date.
       if ($schedule['reservable']) {
         $schedule['reservationId'] = substr($schedule['id'], 0, -6);

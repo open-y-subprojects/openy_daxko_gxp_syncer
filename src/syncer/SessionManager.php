@@ -79,7 +79,8 @@ class SessionManager {
         $scheduleData['id'],
         $scheduleData['hash'],
         $scheduleData['reservable'],
-        $scheduleData['day']
+        $scheduleData['day'],
+        $scheduleData['availabilityStatus'],
       );
       $msg = '[SESSIONMANGER] Created session %id|%title with Daxko id %gxpid. Step %step from %total';
       $this->logger->debug($msg, [
@@ -187,6 +188,11 @@ class SessionManager {
 
     if ($mapping->getDay() != $scheduleData['day']) {
       $mapping->setDay($scheduleData['day']);
+      $isChange = TRUE;
+    }
+
+    if ($mapping->getAvailabilty() != $scheduleData['availabilityStatus'] && $this->config->get('enable_capacity_in_full_syncer')) {
+      $mapping->setAvailabilty($scheduleData['availabilityStatus']);
       $isChange = TRUE;
     }
 

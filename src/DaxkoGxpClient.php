@@ -106,11 +106,12 @@ class DaxkoGxpClient {
    *   GXP location id.
    * @see https://docs.partners.daxko.com/openapi/gxp/#operation/get-class-details
    */
-  public function getSchedules($startDate, $endDate, $locationId) {
+  public function getSchedules($startDate, $endDate, $locationId, $capacity = FALSE) {
     $queryParams = [
       'locationId' => $locationId,
       'startDate' => $startDate,
       'endDate' => $endDate,
+      'capacity' => $capacity ? 1 : 0,
     ];
     $options = [
       'headers' => [

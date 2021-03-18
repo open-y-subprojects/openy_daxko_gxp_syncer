@@ -102,13 +102,13 @@ class QueueManager {
         $totalToUpdate += 1;
       }
     }
-    $msg = '[SPREADER] There are %total schedules to process.';
+    $msg = '[QUEUEMANAGER] There are %total schedules to process.';
     $this->logger->debug($msg, ['%total' => $queue->numberOfItems()]);
-    $msg = '[SPREADER] There are %total sessions to delete.';
+    $msg = '[QUEUEMANAGER] There are %total sessions to delete.';
     $this->logger->debug($msg, ['%total' => $totalToDelete]);
-    $msg = '[SPREADER] There are %total sessions to create.';
+    $msg = '[QUEUEMANAGER] There are %total sessions to create.';
     $this->logger->debug($msg, ['%total' => $totalToCreate]);
-    $msg = '[SPREADER] There are %total sessions to update.';
+    $msg = '[QUEUEMANAGER] There are %total sessions to update.';
     $this->logger->debug($msg, ['%total' => $totalToUpdate]);
   }
 

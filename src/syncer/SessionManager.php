@@ -73,15 +73,6 @@ class SessionManager {
     $current = 1;
     foreach ($data as $scheduleData) {
       $session = $this->createSession($scheduleData);
-      $this->mappingRepository->create(
-        $session,
-        $scheduleData['locationId'],
-        $scheduleData['id'],
-        $scheduleData['hash'],
-        $scheduleData['reservable'],
-        $scheduleData['day'],
-        $scheduleData['availabilityStatus'],
-      );
       $msg = '[SESSIONMANGER] Created session %id|%title with Daxko id %gxpid. Step %step from %total';
       $this->logger->debug($msg, [
         '%id' => $session->id(),
@@ -191,7 +182,7 @@ class SessionManager {
       $isChange = TRUE;
     }
 
-    if ($mapping->getAvailabilty() != $scheduleData['availabilityStatus'] && $this->config->get('enable_capacity_in_full_syncer')) {
+    if ($mapping->getAvailabilty() != $scheduleData['availabilityStatus'] && $this->wrapper->config->get('enable_capacity_in_full_syncer')) {
       $mapping->setAvailabilty($scheduleData['availabilityStatus']);
       $isChange = TRUE;
     }
@@ -254,6 +245,16 @@ class SessionManager {
     $session->setUnpublished();
 
     $session->save();
+
+    $this->mappingRepository->create(
+        $session,
+        $scheduleData['locationId'],
+        $scheduleData['id'],
+        $scheduleData['hash'],
+        $scheduleData['reservable'],
+        $scheduleData['day'],
+        $scheduleData['availabilityStatus'],
+      );
     return $session;
   }
 

@@ -182,7 +182,8 @@ class SessionManager {
       $isChange = TRUE;
     }
 
-    if ($mapping->getAvailabilty() != $scheduleData['availabilityStatus'] && $this->wrapper->config->get('enable_capacity_in_full_syncer')) {
+    $availability = isset($scheduleData['availabilityStatus']) ? $scheduleData['availabilityStatus'] : NULL;
+    if ($mapping->getAvailabilty() != $availability && $this->wrapper->config->get('enable_capacity_in_full_syncer')) {
       $mapping->setAvailabilty($scheduleData['availabilityStatus']);
       $isChange = TRUE;
     }
@@ -253,7 +254,7 @@ class SessionManager {
         $scheduleData['hash'],
         $scheduleData['reservable'],
         $scheduleData['day'],
-        $scheduleData['availabilityStatus'],
+        isset($scheduleData['availabilityStatus']) ? $scheduleData['availabilityStatus'] : NULL,
       );
     return $session;
   }

@@ -2,7 +2,7 @@
 
 namespace Drupal\openy_daxko_gxp_syncer\Plugin\QueueWorker;
 
-use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\openy_daxko_gxp_syncer\syncer\SessionManager;
@@ -19,11 +19,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ScheduleSync extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
   /**
-   * The entity type manager service.
+   * Logger channel.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
    */
-  protected $entityTypeManager;
+  public $logger;
 
   /**
    * The entity type manager service.
@@ -41,12 +41,12 @@ class ScheduleSync extends QueueWorkerBase implements ContainerFactoryPluginInte
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   Entity type manager service.
+   * @param \Drupal\Core\Logger\LoggerChannelInterface $logger
+   *   The Loger Chanel.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entity_type_manager, SessionManager $sessionManager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, LoggerChannelInterface $logger, SessionManager $sessionManager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->entityTypeManager = $entity_type_manager;
+    $this->logger = $logger;
     $this->sessionManager = $sessionManager;
   }
 
@@ -58,7 +58,7 @@ class ScheduleSync extends QueueWorkerBase implements ContainerFactoryPluginInte
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('entity_type.manager'),
+      $container->get('logger.channel.openy_daxko_gxp_syncer'),
       $container->get('openy_daxko_gxp_syncer.session_manager')
     );
   }
@@ -71,16 +71,34 @@ class ScheduleSync extends QueueWorkerBase implements ContainerFactoryPluginInte
       /** @var \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface $mapping */
       $mapping = $data['mapping'];
       $session = $mapping->getSession();
+      $msg = '[GXP_DAXKO_QUEUE] Delete session %id|%title with Daxko id %gxpid. Not exist in API.';
+      $this->logger->debug($msg, [
+        '%id' => $session->id(),
+        '%title' => $session->getTitle(),
+        '%gxpid' => $mapping->getGxpId(),
+      ]);
       $session->delete();
       $mapping->delete();
       return;
     }
     if ($data['action'] == 'create') {
-      $this->sessionManager->createSession($data);
+      $session = $this->sessionManager->createSession($data);
+      $msg = '[GXP_DAXKO_QUEUE] Created session %id|%title with Daxko id %gxpid.';
+      $this->logger->debug($msg, [
+        '%id' => $session->id(),
+        '%title' => $data['name'],
+        '%gxpid' => $data['id'],
+      ]);
       return;
     }
     if ($data['action'] == 'update') {
-      $this->sessionManager->updateSession($data);
+      $session = $this->sessionManager->updateSession($data);
+      $msg = '[GXP_DAXKO_QUEUE] Updated session %id|%title with Daxko id %gxpid.';
+      $this->logger->debug($msg, [
+        '%id' => $session->id(),
+        '%title' => $data['name'],
+        '%gxpid' => $data['id'],
+      ]);
       return;
     }
   }

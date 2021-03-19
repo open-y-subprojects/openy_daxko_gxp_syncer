@@ -148,7 +148,6 @@ class Wrapper {
       $schedule['activity'] = str_replace('Â', '', $schedule['activity']);
       $schedule['name'] = str_replace('Â', '', $schedule['name']);
 
-      $schedule['availabilityStatus'] = NULL;
       if ($schedule['reservable'] && $this->config->get('enable_capacity_in_full_syncer')) {
         $availabilityStatus = 'class full';
         $availability = $schedule["capacity"] - $schedule["booked"];

@@ -105,8 +105,8 @@ class DaxkoGxpClient {
    *   GXP location id.
    * @see https://docs.partners.daxko.com/openapi/gxp/#operation/get-class-details
    */
-  public function getSchedules($startDate, $endDate, $locationId, $capacity = FALSE, $retry = 1) {
-    if ($retry > $this->config->get('retry')) {
+  public function getSchedules($startDate, $endDate, $locationId, $capacity = FALSE, $retry = 0) {
+    if ($retry >= $this->config->get('retry')) {
       throw new SyncException('Retry limit. We can`t get data from daxko api.', 403);
     }
     $queryParams = [

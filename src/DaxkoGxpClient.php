@@ -58,8 +58,8 @@ class DaxkoGxpClient {
    *
    * @see https://docs.partners.daxko.com/tutorials/authentication/
    */
-  public function getAccessToken() {
-    if ($cache = $this->cache->get(self::CACHE_PREFIX . 'access_token')) {
+  public function getAccessToken($force = FALSE) {
+    if (!$force &&$cache = $this->cache->get(self::CACHE_PREFIX . 'access_token')) {
       $access_token = $cache->data;
       return $access_token;
     }
@@ -78,8 +78,7 @@ class DaxkoGxpClient {
       $json = json_decode($content, TRUE, JSON_THROW_ON_ERROR);
     }
     catch (\Exception $e) {
-      $this->logger->error($e);
-      return '';
+      throw new SyncException($e->getMessage(), $e->getCode());
     }
 
     $access_token = $json["access_token"];
@@ -106,7 +105,10 @@ class DaxkoGxpClient {
    *   GXP location id.
    * @see https://docs.partners.daxko.com/openapi/gxp/#operation/get-class-details
    */
-  public function getSchedules($startDate, $endDate, $locationId, $capacity = FALSE) {
+  public function getSchedules($startDate, $endDate, $locationId, $capacity = FALSE, $retry = 1) {
+    if ($retry > 3) {
+      throw new SyncException('Retry limit. We can`t get data from daxko api.', 403);
+    }
     $queryParams = [
       'locationId' => $locationId,
       'startDate' => $startDate,
@@ -117,6 +119,7 @@ class DaxkoGxpClient {
       'headers' => [
         'Authorization' => "Bearer " . $this->getAccessToken(),
       ],
+      'timeout' => 60,
     ];
     $queryStr = http_build_query($queryParams);
     $url = $this->config->get('api_url') . 'classes?' . $queryStr;
@@ -131,8 +134,16 @@ class DaxkoGxpClient {
       }
     }
     catch (\Exception $e) {
-      $this->logger->error($e);
-      return [];
+      $this->logger->warning('%try-th Retry to get data from daxko gxp api for location %id. %code - %msg', [
+        '%msg' => $e->getMessage(),
+        '%code' => $e->getCode(),
+        '%id' => $locationId,
+        '%try' => $retry,
+      ]);
+      $this->getAccessToken($force = TRUE);
+      $retry += 1;
+      $json = $this->getSchedules($startDate, $endDate, $locationId, $capacity, $retry);
+      return $json;
     }
 
     return $json;

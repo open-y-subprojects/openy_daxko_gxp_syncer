@@ -2,6 +2,8 @@
 
 namespace Drupal\openy_daxko_gxp_syncer\syncer;
 
+use Drupal\Core\Queue\QueueFactory;
+
 /**
  * Divide schedules for create, update, and delete by queue.
  */
@@ -36,26 +38,35 @@ class QueueManager {
   protected $logger;
 
   /**
+   * Queue.
+   *
+   * @var \Drupal\Core\Queue\QueueFactory
+   */
+  protected $queue;
+
+  /**
    * Constructor.
    *
    * @param Wrapper $wrapper
    *   Wrapper.
    * @param SessionManager $sessionManager
    *   Session manager.
+   * @param \Drupal\Core\Queue\QueueFactory $queue
+   *   The queue.
    */
-  public function __construct(Wrapper $wrapper, SessionManager $sessionManager) {
+  public function __construct(Wrapper $wrapper, SessionManager $sessionManager, QueueFactory $queue) {
     $this->wrapper = $wrapper;
     $this->sessionManager = $sessionManager;
     $this->mappingRepository = $this->sessionManager->mappingRepository;
     $this->logger = $this->wrapper->logger;
+    $this->queue = $queue;
   }
 
   /**
    * Clean.
    */
   public function manage() {
-    // TODO use dependecy injection.
-    $queue = \Drupal::queue('openy_daxko_gxp');
+    $queue = $this->queue->get('openy_daxko_gxp');
     $queue->deleteQueue();
     $schedules = $this->wrapper->getSchedules();
 

@@ -43,6 +43,8 @@ class ScheduleSync extends QueueWorkerBase implements ContainerFactoryPluginInte
    *   The plugin implementation definition.
    * @param \Drupal\Core\Logger\LoggerChannelInterface $logger
    *   The Loger Chanel.
+   * @param \Drupal\openy_daxko_gxp_syncer\syncer\SessionManager $sessionManager
+   *   The Session Manager.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, LoggerChannelInterface $logger, SessionManager $sessionManager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);

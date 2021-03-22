@@ -54,6 +54,7 @@ services:
     arguments:
       - '@openy_daxko_gxp_syncer.wrapper'
       - '@openy_daxko_gxp_syncer.session_manager'
+      - '@queue'
   openy_daxko_gxp_syncer.availability:
     class: Drupal\openy_daxko_gxp_syncer\syncer\Availability
     arguments:

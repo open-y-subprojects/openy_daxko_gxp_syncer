@@ -119,6 +119,12 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('api_url'),
       '#description' => t('Base url to Daxko Groupex Api.'),
     ];
+    $form['retry'] = [
+      '#type' => 'textfield',
+      '#title' => 'The number of attempts to get data',
+      '#default_value' => $config->get('retry'),
+      '#description' => 'The number of attempts to get data from daxko when daxko server return bad response.',
+    ];
     $form['fetch_days'] = [
       '#type' => 'number',
       '#title' => 'Days to sync',
@@ -184,6 +190,7 @@ class SettingsForm extends ConfigFormBase {
       ->set('grant_type', $form_state->getValue('grant_type'))
       ->set('auth_url', $form_state->getValue('auth_url'))
       ->set('api_url', $form_state->getValue('api_url'))
+      ->set('retry', $form_state->getValue('retry'))
       ->set('fetch_days', $form_state->getValue('fetch_days'))
       ->set('availability_days', $form_state->getValue('availability_days'))
       ->set('reservation_url', $form_state->getValue('reservation_url'))

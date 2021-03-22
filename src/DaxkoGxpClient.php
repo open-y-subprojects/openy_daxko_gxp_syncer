@@ -103,6 +103,7 @@ class DaxkoGxpClient {
    *   End date period range.
    * @param int $locationId
    *   GXP location id.
+   *
    * @see https://docs.partners.daxko.com/openapi/gxp/#operation/get-class-details
    */
   public function getSchedules($startDate, $endDate, $locationId, $capacity = FALSE, $retry = 0) {
@@ -154,6 +155,7 @@ class DaxkoGxpClient {
    *
    * @param string $daxkoId
    *   The ID of the schedule.
+   *
    * @see https://docs.partners.daxko.com/openapi/gxp/#operation/get-class-details-by-id
    */
   public function getScheduleDetails($daxkoId) {

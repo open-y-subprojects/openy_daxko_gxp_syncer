@@ -160,6 +160,8 @@ class Wrapper {
           $availabilityStatus = 'waitlist only';
         }
         $schedule['availabilityStatus'] = $availabilityStatus;
+      }
+      if ($this->config->get('enable_capacity_in_full_syncer')) {
         unset($schedule["capacity"]);
         unset($schedule["booked"]);
         unset($schedule["waitlistCapacity"]);

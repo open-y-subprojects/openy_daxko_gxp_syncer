@@ -248,14 +248,14 @@ class SessionManager {
     $session->save();
 
     $this->mappingRepository->create(
-        $session,
-        $scheduleData['locationId'],
-        $scheduleData['id'],
-        $scheduleData['hash'],
-        $scheduleData['reservable'],
-        $scheduleData['day'],
-        isset($scheduleData['availabilityStatus']) ? $scheduleData['availabilityStatus'] : NULL,
-      );
+      $session,
+      $scheduleData['locationId'],
+      $scheduleData['id'],
+      $scheduleData['hash'],
+      $scheduleData['reservable'],
+      $scheduleData['day'],
+      isset($scheduleData['availabilityStatus']) ? $scheduleData['availabilityStatus'] : NULL,
+    );
     return $session;
   }
 

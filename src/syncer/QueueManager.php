@@ -67,6 +67,7 @@ class QueueManager {
    */
   public function manage() {
     $queue = $this->queue->get('openy_daxko_gxp');
+    // New data is coming from fetcher. Clear queue.
     $queue->deleteQueue();
     $schedules = $this->wrapper->getSchedules();
 

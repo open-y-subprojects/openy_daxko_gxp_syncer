@@ -55,6 +55,9 @@ class DaxkoGroupexMappingRepository {
    * Delete all mapping and remove all groupex session.
    */
   public function deleteMapping() {
+    $queue = \Drupal::queue('openy_daxko_gxp');
+    $queue->deleteQueue();
+
     $ids = $this->storage->getQuery()->execute();
     $this->logger->notice('[REPOSITORY] Trying to remove all sessions from Daxko Groupex Mapping.');
     if (empty($ids)) {

@@ -129,9 +129,6 @@ class DaxkoGxpClient {
       $body = $response->getBody();
       $content = $body->getContents();
       $json = json_decode($content, TRUE, JSON_THROW_ON_ERROR);
-      if (!$json) {
-        $json = [];
-      }
     }
     catch (\Exception $e) {
       $this->logger->warning('%try-th Retry to get data from daxko gxp api for location %id. %code - %msg', [

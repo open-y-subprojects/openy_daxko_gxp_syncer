@@ -129,10 +129,10 @@ class DaxkoGxpClient {
       $response = $this->client->get($url, $options);
       $body = $response->getBody();
       $content = $body->getContents();
-      $json = json_decode($content, TRUE, JSON_THROW_ON_ERROR);
-      if (gettype($json) != 'array') {
+      if (empty(trim($content))) {
         return [];
       }
+      $json = json_decode($content, TRUE, JSON_THROW_ON_ERROR);
     }
     catch (\Exception $e) {
       $this->logger->warning('%try-th Retry to get data from daxko gxp api for location %id. %code - %msg', [

@@ -138,7 +138,7 @@ class DaxkoGxpClient {
         '%msg' => $e->getMessage(),
         '%code' => $e->getCode(),
         '%id' => $locationId,
-        '%try' => $retry,
+        '%try' => $retry + 1,
       ]);
       $this->getAccessToken($force = TRUE);
       $retry += 1;

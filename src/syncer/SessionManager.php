@@ -151,7 +151,9 @@ class SessionManager {
 
     $class = $session->field_session_class->referencedEntities();
     $class = reset($class);
-    if ($class->title->value != $scheduleData['activity']) {
+    $category = $class->field_class_activity->referencedEntities();
+    $category = reset($category);
+    if ($class->title->value != $scheduleData['activity'] || $category->title->value != $scheduleData['category']) {
       $session->set('field_session_class', $this->getClass($scheduleData));
       $isChange = TRUE;
     }

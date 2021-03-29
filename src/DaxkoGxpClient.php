@@ -149,10 +149,9 @@ class DaxkoGxpClient {
       if ($delay > self::MAX_DELAY) {
         $delay = self::MAX_DELAY;
       }
-      if ($delay <= 0) {
-        $delay = 1;
+      if ($delay > 0) {
+        sleep($delay * ($retry + 1));
       }
-      sleep($delay * ($retry + 1));
       $this->getAccessToken($force = TRUE);
       $retry += 1;
       $json = $this->getSchedules($startDate, $endDate, $locationId, $capacity, $retry);

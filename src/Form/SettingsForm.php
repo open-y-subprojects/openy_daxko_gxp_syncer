@@ -141,7 +141,9 @@ class SettingsForm extends ConfigFormBase {
       '#type' => 'number',
       '#title' => 'Delay between retry get data',
       '#default_value' => $config->get('delay'),
-      '#description' => t('Seconds between retry get data when daxko api returned unexpected response.'),
+      '#max' => 60,
+      '#min' => 0,
+      '#description' => t('Seconds between retry get data when daxko api returned unexpected response. 0 - no delay, max 60 seconds'),
     ];
     $form['reservation_url'] = [
       '#type' => 'url',

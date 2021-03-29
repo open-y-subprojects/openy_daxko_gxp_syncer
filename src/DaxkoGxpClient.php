@@ -145,12 +145,12 @@ class DaxkoGxpClient {
         '%id' => $locationId,
         '%try' => $retry + 1,
       ]);
-      $delay = (int) $this->config->get('delay');
+      $delay = ((int) $this->config->get('delay')) * ($retry + 1);
       if ($delay > self::MAX_DELAY) {
         $delay = self::MAX_DELAY;
       }
       if ($delay > 0) {
-        sleep($delay * ($retry + 1));
+        sleep($delay);
       }
       $this->getAccessToken($force = TRUE);
       $retry += 1;

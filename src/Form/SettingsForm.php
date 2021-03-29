@@ -137,6 +137,12 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('availability_days'),
       '#description' => t('Days to sync availability for schedules.'),
     ];
+    $form['delay'] = [
+      '#type' => 'number',
+      '#title' => 'Delay between retry get data',
+      '#default_value' => $config->get('delay'),
+      '#description' => t('Seconds between retry get data when daxko api returned unexpected response.'),
+    ];
     $form['reservation_url'] = [
       '#type' => 'url',
       '#title' => 'Reservation URL',
@@ -196,6 +202,7 @@ class SettingsForm extends ConfigFormBase {
       ->set('reservation_url', $form_state->getValue('reservation_url'))
       ->set('reservation_text', $form_state->getValue('reservation_text'))
       ->set('parrent_subprogram', $form_state->getValue('parrent_subprogram'))
+      ->set('delay', $form_state->getValue('delay'))
       ->save();
     $this->configFactory()->reset('openy_daxko_gxp_syncer.settings');
     parent::submitForm($form, $form_state);

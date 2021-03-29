@@ -78,6 +78,7 @@ class DaxkoGxpClient {
       $json = json_decode($content, TRUE, JSON_THROW_ON_ERROR);
     }
     catch (\Exception $e) {
+      $this->logger->error($e->getMessage());
       throw new SyncException($e->getMessage(), $e->getCode());
     }
 
@@ -108,7 +109,9 @@ class DaxkoGxpClient {
    */
   public function getSchedules($startDate, $endDate, $locationId, $capacity = FALSE, $retry = 0) {
     if ($retry >= $this->config->get('retry')) {
-      throw new SyncException('Retry limit. We can`t get data from daxko api.', 403);
+      $msg = 'Retry limit. We can`t get data from daxko api.';
+      $this->logger->error($msg);
+      throw new SyncException($msg, 403);
     }
     $queryParams = [
       'locationId' => $locationId,
@@ -141,6 +144,7 @@ class DaxkoGxpClient {
         '%id' => $locationId,
         '%try' => $retry + 1,
       ]);
+      sleep($this->config->get('delay') * ($retry + 1));
       $this->getAccessToken($force = TRUE);
       $retry += 1;
       $json = $this->getSchedules($startDate, $endDate, $locationId, $capacity, $retry);

@@ -151,13 +151,13 @@ class Wrapper {
       if ($schedule['reservable'] && $this->config->get('enable_capacity_in_full_syncer')) {
         $availabilityStatus = 'class full';
         $availability = $schedule["capacity"] - $schedule["booked"];
-        if ($availability > 0) {
-          $availabilityStatus = $availability . ' spots left';
-        }
         $waitlist = $schedule["waitlistCapacity"] - $schedule["waitlistBooked"];
         if ($waitlist > 0) {
           // @todo disaplay waitlist availability.
           $availabilityStatus = 'waitlist only';
+        }
+        if ($availability > 0) {
+          $availabilityStatus = $availability . ' spots left';
         }
         $schedule['availabilityStatus'] = $availabilityStatus;
       }

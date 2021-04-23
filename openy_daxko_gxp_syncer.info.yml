@@ -9,3 +9,4 @@ dependencies:
   - openy_system
   - openy_node_session
   - ymca_sync:ymca_sync
+  - openy_mappings_feature

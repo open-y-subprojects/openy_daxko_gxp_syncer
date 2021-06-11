@@ -176,6 +176,7 @@ class SessionManager {
     }
     if ($currentDay != $scheduleData['weekDay']) {
       $sessionTime->set('field_session_time_days', [$scheduleData['weekDay']]);
+      $sessionTime->save();
       $isChange = TRUE;
     }
 

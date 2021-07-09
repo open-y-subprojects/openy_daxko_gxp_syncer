@@ -1,5 +1,5 @@
 openy_daxko_gxp_syncer.settings_form:
-  path: '/admin/config/system/openy-daxko-gxp-syncer'
+  path: '/admin/openy/integrations/groupex-pro/daxko-gxp-api'
   defaults:
     _title: 'OpenY Daxko GroupEx PRO Syncer settings'
     _form: 'Drupal\openy_daxko_gxp_syncer\Form\SettingsForm'

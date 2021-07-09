@@ -83,59 +83,59 @@ class SettingsForm extends ConfigFormBase {
       $gxp_id = $location_id['field_groupex_id'][0]['value'];
       $options[$gxp_id] = $nodeType->label();
     }
+    $form['description'] = [
+      '#markup' => '<p>' . $this->t('This form provides configuration of the authentication credentials for latest GroupEx PRO API and provides settings for availability and reservation options for the classes.') . '<p>',
+    ];
+    $form['api_doc_link'] = [
+      '#markup' => '<a href="https://docs.partners.daxko.com/openapi/gxp/v1/">' . $this->t('Daxko GroupEx Pro API documentation.') . '</a>',
+    ];
     $form['client_id'] = [
       '#type' => 'textfield',
       '#title' => 'Daxko Client ID',
       '#default_value' => $config->get('client_id'),
-      '#description' => 'This will be the username you were provided when your API credentials were generated.',
+      '#description' => $this->t('Your Groupex Pro API credentials provided by Daxko.'),
     ];
     $form['client_secret'] = [
       '#type' => 'textfield',
       '#title' => 'Daxko Client Password',
       '#default_value' => $config->get('client_secret'),
-      '#description' => 'This will be the password you were provided when your API credentials were generated. Your password should be securely stored and should only be required when you first generate your access token.',
+      '#description' => $this->t('Your Groupex Pro API client password provided by Daxko.'),
     ];
     $form['scope'] = [
       '#type' => 'textfield',
       '#title' => 'ID for the customer/client',
       '#default_value' => $config->get('scope'),
-      '#description' => 'This is the ID for the customer/client you are trying to programmatically interact with. Note that, while you may have access to multiple clients in your account, you will need to generate a new token for each client you are accessing.',
-    ];
-    $form['grant_type'] = [
-      '#type' => 'textfield',
-      '#title' => 'Grand type',
-      '#default_value' => $config->get('grant_type'),
-      '#description' => 'This will always be set to client_credentialswhen getting a new token.',
+      '#description' => $this->t('Your GroupEx PRO Client ID. Additional clien IDs require separate token to be generated.'),
     ];
     $form['auth_url'] = [
       '#type' => 'url',
       '#title' => 'The authentication endpoint',
       '#default_value' => $config->get('auth_url'),
-      '#description' => 'The authentication endpoint.',
+      '#description' => $this->t('The authentication endpoint.'),
     ];
     $form['api_url'] = [
       '#type' => 'url',
       '#title' => 'The Daxko Groupex endpoint',
       '#default_value' => $config->get('api_url'),
-      '#description' => t('Base url to Daxko Groupex Api.'),
+      '#description' => $this->t('Base URL to Daxko Groupex Api.'),
     ];
     $form['retry'] = [
       '#type' => 'textfield',
       '#title' => 'The number of attempts to get data',
       '#default_value' => $config->get('retry'),
-      '#description' => 'The number of attempts to get data from daxko when daxko server return bad response.',
+      '#description' => $this->t('The number of attempts to get data from daxko when daxko server return bad response.'),
     ];
     $form['fetch_days'] = [
       '#type' => 'number',
       '#title' => 'Days to sync',
       '#default_value' => $config->get('fetch_days'),
-      '#description' => t('Days to sync schedules.'),
+      '#description' => $this->t('Sync classes for set number of days ahead.'),
     ];
     $form['availability_days'] = [
       '#type' => 'number',
       '#title' => 'Days to sync availability',
       '#default_value' => $config->get('availability_days'),
-      '#description' => t('Days to sync availability for schedules.'),
+      '#description' => $this->t('Request available spots for classes for set number of days ahead.'),
     ];
     $form['delay'] = [
       '#type' => 'number',
@@ -143,19 +143,19 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('delay'),
       '#max' => 60,
       '#min' => 0,
-      '#description' => t('Seconds between retry get data when daxko api returned unexpected response. 0 - no delay, max 60 seconds'),
+      '#description' => $this->t('Seconds between retry get data when daxko api returned unexpected response. 0 - no delay, max 60 seconds'),
     ];
     $form['reservation_url'] = [
       '#type' => 'url',
       '#title' => 'Reservation URL',
       '#default_value' => $config->get('reservation_url'),
-      '#description' => t('Base reservation url where users can register.'),
+      '#description' => $this->t('Base reservation url where users can register.'),
     ];
     $form['reservation_text'] = [
       '#type' => 'textfield',
       '#title' => 'Text on buttons for reserve schedule',
       '#default_value' => $config->get('reservation_text'),
-      '#description' => t('Text on buttons for reserve schedule.'),
+      '#description' => $this->t('Text on buttons for reserve a spot.'),
     ];
     $form['parrent_subprogram'] = [
       '#type' => 'entity_autocomplete',
@@ -163,12 +163,13 @@ class SettingsForm extends ConfigFormBase {
       '#selection_settings' => ['target_bundles' => 'activity'],
       '#title' => $this->t('Parrent SubProgram'),
       '#default_value' => Node::load($config->get('parrent_subprogram')),
-      '#description' => t('What activity we should use as a parent. Should be Group Exercises under Fitness.'),
+      '#description' => $this->t('Parent Program Subcategory (PEF) for GXP classes.'),
     ];
     $form['locations'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Enabled Locations'),
       '#options' => $options,
+      '#description' => $this->t('The API requests will run for selected locations and they will be disaplyed in The Schedules interface'),
       '#default_value' => $config->get('locations') ?: [],
     ];
     return parent::buildForm($form, $form_state);
@@ -195,7 +196,6 @@ class SettingsForm extends ConfigFormBase {
       ->set('client_id', $form_state->getValue('client_id'))
       ->set('client_secret', $form_state->getValue('client_secret'))
       ->set('scope', $form_state->getValue('scope'))
-      ->set('grant_type', $form_state->getValue('grant_type'))
       ->set('auth_url', $form_state->getValue('auth_url'))
       ->set('api_url', $form_state->getValue('api_url'))
       ->set('retry', $form_state->getValue('retry'))

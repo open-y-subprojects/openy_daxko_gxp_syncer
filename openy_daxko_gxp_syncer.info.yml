@@ -9,4 +9,4 @@ dependencies:
   - openy_system
   - openy_node_session
   - ymca_sync:ymca_sync
-  - groupexpro
+  - openy_gxp:openy_gxp

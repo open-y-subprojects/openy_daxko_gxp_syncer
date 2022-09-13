@@ -68,7 +68,7 @@ class Fetcher {
     // Get capacity from extended url query parameter.
     $enableCapacity = $this->config->get('enable_capacity_in_full_syncer');
 
-    $this->logger->notice('[FETCHER] Fetch data from daxko groupex api. Begin date: %start, End date: %end', [
+    $this->logger->debug('[FETCHER] Fetch data from daxko groupex api started. Begin date: %start, End date: %end', [
       '%start' => $begin->format('Y-m-d'),
       '%end' => $end->format('Y-m-d'),
     ]);

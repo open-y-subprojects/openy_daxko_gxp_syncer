@@ -1,5 +1,5 @@
 openy_daxko_gxp_syncer.settings:
   title: 'GroupEx Pro Daxko API Syncer settings'
-  parent: openy_gxp.openy_integrations_groupexpro
+  parent: openy_system.openy_integrations_groupexpro
   route_name: openy_daxko_gxp_syncer.settings_form
   weight: 130

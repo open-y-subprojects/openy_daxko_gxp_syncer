@@ -101,7 +101,10 @@ class QueueManager {
       $mapping[$mappingEntity->getGxpId()] = $mappingEntity->getHash();
     }
 
+    // Set timeout between save node.
+    $timeout = (int) $this->wrapper->config->get('timeout');
     foreach ($schedules as $schedule) {
+      $schedule['timeout'] = $timeout;
       if (!isset($mapping[$schedule['id']])) {
         $schedule['action'] = 'create';
         $queue->createItem($schedule);

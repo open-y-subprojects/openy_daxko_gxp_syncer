@@ -116,6 +116,37 @@ class Wrapper {
   }
 
   /**
+   * Apply allowed fields for data from Daxko API.
+   */
+  private function applyAllowedKeys(&$schedule) {
+    $allowed_keys = [
+      "id",
+      "name",
+      "startDateTime",
+      "endDateTime",
+      "locationId",
+      "location",
+      "category",
+      "studio",
+      "instructor",
+      "activity",
+      "free",
+      "reservable",
+      "capacity",
+      "booked",
+      "waitlistCapacity",
+      "waitlistBooked",
+      "virtual",
+      "desc"
+    ];
+    foreach ($schedule as $key => $value) {
+      if (!in_array($key, $allowed_keys)) {
+        unset($schedule[$key]);
+      }
+    }
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function addSchedules($rawData) {
@@ -139,14 +170,20 @@ class Wrapper {
         unset($schedule);
         continue;
       }
+
+      $this->applyAllowedKeys($schedule);
+
       $schedule['locationId'] = $locationMapping[$schedule['locationId']]['branchId'];
       // In Groupex UI we can set only one instructor or activity.
       $schedule['instructor'] = reset($schedule['instructor']);
       $schedule['activity'] = reset($schedule['activity']);
+      $schedule['description'] = $schedule['desc'];
+      unset($schedule['desc']);
 
       // Remove Â symbol.
       $schedule['activity'] = str_replace('Â', '', $schedule['activity']);
       $schedule['name'] = str_replace('Â', '', $schedule['name']);
+      $schedule['description'] = str_replace('Â', '', $schedule['description']);
 
       if ($schedule['reservable'] && $this->config->get('enable_capacity_in_full_syncer')) {
         $availabilityStatus = 'class full';

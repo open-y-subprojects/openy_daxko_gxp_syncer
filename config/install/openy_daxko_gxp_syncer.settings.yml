@@ -12,6 +12,7 @@ parrent_subprogram: 14171
 enable_capacity_in_full_syncer: TRUE
 retry: 3
 delay: 5
+timeout: 0
 locations:
   - 26
   - 5476

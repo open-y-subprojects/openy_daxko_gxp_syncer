@@ -40,6 +40,10 @@ function openy_daxko_gxp_syncer_openy_repeat_results_alter(&$results, $request, 
     }
     if (isset($mappingNormalize[$schedule->nid])) {
       $schedule->spottext = $mappingNormalize[$schedule->nid];
+      // Add type=new to all links for new Groupex Pro UI on schedules.
+      if (!empty($schedule->register_url)) {
+        $schedule->register_url = $schedule->register_url . '?type=new';
+      }
     }
   }
 }

@@ -73,7 +73,7 @@ class SessionManager {
     $current = 1;
     foreach ($data as $scheduleData) {
       $session = $this->createSession($scheduleData);
-      $msg = '[SESSIONMANGER] Created session %id|%title with Daxko id %gxpid. Step %step from %total';
+      $msg = '[SESSIONMANGER] Created session %id-%title with Daxko id %gxpid. Step %step from %total';
       $this->logger->debug($msg, [
         '%id' => $session->id(),
         '%title' => $scheduleData['name'],
@@ -103,7 +103,7 @@ class SessionManager {
     $current = 1;
     foreach ($data as $scheduleData) {
       $session = $this->updateSession($scheduleData);
-      $msg = '[SESSIONMANGER] Updated session %id|%title with Daxko id %gxpid. Step %step from %total';
+      $msg = '[SESSIONMANGER] Updated session %id-%title with Daxko id %gxpid. Step %step from %total';
       $this->logger->debug($msg, [
         '%id' => $session->id(),
         '%title' => $scheduleData['name'],
@@ -126,27 +126,22 @@ class SessionManager {
     /** @var \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface $mapping */
     $mapping = $this->mappingRepository->loadByGxpId($scheduleData['id']);
     $session = $mapping->session->referencedEntities();
-    $session = reset($session);
     /** @var \Drupal\Node\Entity\Node $session */
-    $isChange = FALSE;
+    $session = reset($session);
 
     if ($session->title->value != $scheduleData['name']) {
       $session->set('title', $scheduleData['name']);
-      $isChange = TRUE;
     }
 
     if ($session->field_session_room->value != $scheduleData['studio']) {
       $session->set('field_session_room', $scheduleData['studio']);
-      $isChange = TRUE;
     }
     if ($mapping->getLocationId() != $scheduleData['locationId']) {
       $session->set('field_session_location', ['target_id' => $scheduleData['locationId']]);
-      $isChange = TRUE;
     }
 
     if ($session->field_session_instructor->value != $scheduleData['instructor']) {
       $session->set('field_session_instructor', $scheduleData["instructor"]);
-      $isChange = TRUE;
     }
 
     $class = $session->field_session_class->referencedEntities();
@@ -155,7 +150,11 @@ class SessionManager {
     $category = reset($category);
     if ($class->title->value != $scheduleData['activity'] || $category->title->value != $scheduleData['category']) {
       $session->set('field_session_class', $this->getClass($scheduleData));
-      $isChange = TRUE;
+    }
+    // Update description.
+    if ($class->field_class_description->value != $scheduleData['description']) {
+      $class->set('field_class_description', $scheduleData['description']);
+      $class->save();
     }
 
     $sessionTime = $session->field_session_time->referencedEntities();
@@ -172,23 +171,19 @@ class SessionManager {
         ]
       );
       $sessionTime->save();
-      $isChange = TRUE;
     }
     if ($currentDay != $scheduleData['weekDay']) {
       $sessionTime->set('field_session_time_days', [$scheduleData['weekDay']]);
       $sessionTime->save();
-      $isChange = TRUE;
     }
 
     if ($mapping->getDay() != $scheduleData['day']) {
       $mapping->setDay($scheduleData['day']);
-      $isChange = TRUE;
     }
 
     $availability = isset($scheduleData['availabilityStatus']) ? $scheduleData['availabilityStatus'] : NULL;
     if ($mapping->getAvailabilty() != $availability && $this->wrapper->config->get('enable_capacity_in_full_syncer')) {
       $mapping->setAvailabilty($scheduleData['availabilityStatus']);
-      $isChange = TRUE;
     }
 
     if ($mapping->getReservable() != $scheduleData['reservable']) {
@@ -206,17 +201,12 @@ class SessionManager {
         $session->set('field_session_reg_link', NULL);
         $session->set('field_productid', NULL);
       }
-      $isChange = TRUE;
     }
 
-    if ($isChange) {
-      $session->save();
-      $mapping->set('hash', $scheduleData['hash']);
-      $mapping->save();
-      return $session;
-    }
-    $msg = '[SESSIONMANGER] Can`t update session, check Daxko Groupex API for changes and ensure that update logic for created field exist in updateSession. Data: %data';
-    $this->logger->warning($msg, ['%data' => json_encode($scheduleData)]);
+    $session->save();
+    $mapping->set('hash', $scheduleData['hash']);
+    $mapping->save();
+
     return $session;
   }
 
@@ -361,6 +351,7 @@ class SessionManager {
           ],
         ],
         'field_content' => $paragraphs,
+        'field_class_description' => $class['description'],
       ]);
 
       $class->save();

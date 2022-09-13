@@ -69,11 +69,14 @@ class ScheduleSync extends QueueWorkerBase implements ContainerFactoryPluginInte
    * {@inheritdoc}
    */
   public function processItem($data) {
+    if ($data['timeout'] > 0) {
+      usleep($data['timeout'] * 1000);
+    }
     if ($data['action'] == 'delete') {
       /** @var \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingInterface $mapping */
       $mapping = $data['mapping'];
       $session = $mapping->getSession();
-      $msg = '[GXP_DAXKO_QUEUE] Delete session %id|%title with Daxko id %gxpid. Not exist in API.';
+      $msg = '[GXP_DAXKO_QUEUE] Delete session %id-%title with Daxko id %gxpid. Not exist in API.';
       $this->logger->debug($msg, [
         '%id' => $session->id(),
         '%title' => $session->getTitle(),
@@ -85,7 +88,7 @@ class ScheduleSync extends QueueWorkerBase implements ContainerFactoryPluginInte
     }
     if ($data['action'] == 'create') {
       $session = $this->sessionManager->createSession($data);
-      $msg = '[GXP_DAXKO_QUEUE] Created session %id|%title with Daxko id %gxpid.';
+      $msg = '[GXP_DAXKO_QUEUE] Created session %id-%title with Daxko id %gxpid.';
       $this->logger->debug($msg, [
         '%id' => $session->id(),
         '%title' => $data['name'],
@@ -95,7 +98,7 @@ class ScheduleSync extends QueueWorkerBase implements ContainerFactoryPluginInte
     }
     if ($data['action'] == 'update') {
       $session = $this->sessionManager->updateSession($data);
-      $msg = '[GXP_DAXKO_QUEUE] Updated session %id|%title with Daxko id %gxpid.';
+      $msg = '[GXP_DAXKO_QUEUE] Updated session %id-%title with Daxko id %gxpid.';
       $this->logger->debug($msg, [
         '%id' => $session->id(),
         '%title' => $data['name'],

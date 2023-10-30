@@ -330,6 +330,7 @@ class SessionManager {
 
     // Try to find class.
     $existingClasses = $nodeStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('type', 'class')
       ->condition('title', $class['activity'])
       ->condition('field_class_activity', $activity->id())

@@ -63,6 +63,7 @@ class Cleaner {
     // Remove not existing in api sessions.
     $mappingStorage = $this->mappingRepository->getStorage();
     $query = $mappingStorage->getQuery();
+    $query->accessCheck(FALSE);
     $query->condition('gxpid', $schedulesIds, 'NOT IN');
     $ids = $query->execute();
     if (count($ids) > 0) {
@@ -75,6 +76,7 @@ class Cleaner {
 
     // Check to existing schedules.
     $query = $mappingStorage->getQuery();
+    $query->accessCheck(FALSE);
     $query->condition('gxpid', $schedulesIds, 'IN');
     $ids = $query->execute();
     $mappingsEntity = $mappingStorage->loadMultiple($ids);

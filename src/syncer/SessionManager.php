@@ -304,6 +304,7 @@ class SessionManager {
 
     // Try to get existing activity.
     $existingActivities = $nodeStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('title', $class['category'])
       ->condition('type', 'activity')
       ->condition('field_activity_category', $this->wrapper->config->get('parrent_subprogram'))
@@ -329,6 +330,7 @@ class SessionManager {
 
     // Try to find class.
     $existingClasses = $nodeStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('type', 'class')
       ->condition('title', $class['activity'])
       ->condition('field_class_activity', $activity->id())

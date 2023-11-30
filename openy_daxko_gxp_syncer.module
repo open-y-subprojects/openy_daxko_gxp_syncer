@@ -15,7 +15,7 @@ function openy_daxko_gxp_syncer_openy_repeat_results_alter(&$results, $request, 
   /** @var \Drupal\openy_daxko_gxp_syncer\DaxkoGroupexMappingRepository $mappingRepository*/
   $mappingRepository = \Drupal::service('openy_daxko_gxp_syncer.mapping');
   $storage = $mappingRepository->getStorage();
-  $query = $storage->getQuery();
+  $query = $storage->getQuery()->accessCheck(FALSE);
   $sessionIds = [];
   foreach ($results as $schedule) {
     if (empty($schedule->productid)) {

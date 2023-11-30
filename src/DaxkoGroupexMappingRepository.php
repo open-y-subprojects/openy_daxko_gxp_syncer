@@ -58,7 +58,7 @@ class DaxkoGroupexMappingRepository {
     $queue = \Drupal::queue('openy_daxko_gxp');
     $queue->deleteQueue();
 
-    $ids = $this->storage->getQuery()->execute();
+    $ids = $this->storage->getQuery()->accessCheck(FALSE)->execute();
     $this->logger->notice('[REPOSITORY] Trying to remove all sessions from Daxko Groupex Mapping.');
     if (empty($ids)) {
       $this->logger->notice('[REPOSITORY] Nothing to delete, repository is empty.');

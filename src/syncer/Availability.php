@@ -90,6 +90,7 @@ class Availability {
     foreach ($daterange as $date) {
       $date = $date->format('Y-m-d');
       $query = $storage->getQuery();
+      $query->accessCheck(FALSE);
       $query->condition('day', $date);
       $query->condition('reservable', TRUE);
       $ids = $query->execute();

@@ -129,9 +129,9 @@ class Wrapper {
       }
     }
     // Normalize fields.
-    foreach ($schedules as &$schedule) {
+    foreach ($schedules as $key => &$schedule) {
       if (!$this->isScheduleValid($schedule)) {
-        unset($schedule);
+        unset($schedules[$key]);
         continue;
       }
       $schedule['locationId'] = $locationMapping[$schedule['locationId']]['branchId'];

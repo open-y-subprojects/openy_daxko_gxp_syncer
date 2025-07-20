@@ -129,14 +129,9 @@ class Wrapper {
       }
     }
     // Normalize fields.
-    foreach ($schedules as &$schedule) {
-      if (!isset($locationMapping[$schedule['locationId']])) {
-        $msg = 'We have not Groupex location id %id in locations mapping, continue. Data: %data';
-        $this->logger->warning($msg, [
-          '%id' => $schedule['locationId'],
-          '%data' => json_encode($schedule),
-        ]);
-        unset($schedule);
+    foreach ($schedules as $key => &$schedule) {
+      if (!$this->isScheduleValid($schedule)) {
+        unset($schedules[$key]);
         continue;
       }
       $schedule['locationId'] = $locationMapping[$schedule['locationId']]['branchId'];
@@ -212,6 +207,37 @@ class Wrapper {
     }
     $this->locationMapping = $locationMapping;
     return $locationMapping;
+  }
+
+  /**
+   * Check if schedule is valid.
+   *
+   * @param mixed $schedule
+   *   Schedule.
+   *
+   * @return bool
+   *   Is valid.
+   */
+  private function isScheduleValid($schedule) {
+    $locationMapping = $this->getLocationMapping();
+    if (!isset($locationMapping[$schedule['locationId']])) {
+      $msg = 'We have not Groupex location id %id in locations mapping, continue. Data: %data';
+      $this->logger->warning($msg, [
+        '%id' => $schedule['locationId'],
+        '%data' => json_encode($schedule),
+      ]);
+      return FALSE;
+    }
+    if (empty($schedule['name'])) {
+      $msg = 'No name in schedule data with id %id, continue. Data: %data';
+      $this->logger->warning($msg, [
+        '%id' => $schedule['id'],
+        '%data' => json_encode($schedule),
+      ]);
+      return FALSE;
+    }
+
+    return TRUE;
   }
 
 }

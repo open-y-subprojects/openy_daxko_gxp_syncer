@@ -26,7 +26,7 @@ class SettingsForm extends ConfigFormBase {
   /**
    * Mapping repository.
    *
-   * @var \Drupal\ymca_mappings\LocationMappingRepository
+   * @var \Drupal\openy_mappings\LocationMappingRepository
    */
   protected $mappingRepository;
 
@@ -35,17 +35,17 @@ class SettingsForm extends ConfigFormBase {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The factory for configuration objects.
-   * @param \Drupal\Core\Config\TypedConfigManagerInterface $typedConfigManager
+   * @param \Drupal\Core\Config\TypedConfigManagerInterface $typed_config_manager
    *   The typed config manager.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The Entity manager.
-   * @param \Drupal\openy_mappings\LocationMappingRepository $mappingRepository
+   * @param \Drupal\openy_mappings\LocationMappingRepository $mapping_repository
    *   Location mapping repo.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, TypedConfigManagerInterface $typedConfigManager, EntityTypeManagerInterface $entity_type_manager, LocationMappingRepository $mappingRepository) {
-    parent::__construct($config_factory, $typedConfigManager);
+  public function __construct(ConfigFactoryInterface $config_factory, TypedConfigManagerInterface $typed_config_manager, EntityTypeManagerInterface $entity_type_manager, LocationMappingRepository $mapping_repository) {
+    parent::__construct($config_factory, $typed_config_manager);
     $this->entityTypeManager = $entity_type_manager;
-    $this->mappingRepository = $mappingRepository;
+    $this->mappingRepository = $mapping_repository;
   }
 
   /**

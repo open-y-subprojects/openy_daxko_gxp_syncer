@@ -3,6 +3,7 @@
 namespace Drupal\openy_daxko_gxp_syncer\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -25,24 +26,26 @@ class SettingsForm extends ConfigFormBase {
   /**
    * Mapping repository.
    *
-   * @var \Drupal\ymca_mappings\LocationMappingRepository
+   * @var \Drupal\openy_mappings\LocationMappingRepository
    */
   protected $mappingRepository;
 
   /**
    * Constructor.
    *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   The Entity manager.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The factory for configuration objects.
-   * @param \Drupal\openy_mappings\LocationMappingRepository $mappingRepository
+   * @param \Drupal\Core\Config\TypedConfigManagerInterface $typed_config_manager
+   *   The typed config manager.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The Entity manager.
+   * @param \Drupal\openy_mappings\LocationMappingRepository $mapping_repository
    *   Location mapping repo.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, ConfigFactoryInterface $config_factory, LocationMappingRepository $mappingRepository) {
-    parent::__construct($config_factory);
+  public function __construct(ConfigFactoryInterface $config_factory, TypedConfigManagerInterface $typed_config_manager, EntityTypeManagerInterface $entity_type_manager, LocationMappingRepository $mapping_repository) {
+    parent::__construct($config_factory, $typed_config_manager);
     $this->entityTypeManager = $entity_type_manager;
-    $this->mappingRepository = $mappingRepository;
+    $this->mappingRepository = $mapping_repository;
   }
 
   /**
@@ -50,11 +53,13 @@ class SettingsForm extends ConfigFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity_type.manager'),
       $container->get('config.factory'),
+      $container->get('config.typed'),
+      $container->get('entity_type.manager'),
       $container->get('openy_mappings.location_repository')
     );
   }
+
   /**
    * {@inheritdoc}
    */

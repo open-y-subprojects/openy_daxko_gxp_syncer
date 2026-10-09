@@ -100,8 +100,8 @@ class DaxkoGroupexMappingListBuilder extends EntityListBuilder {
   /**
    * {@inheritdoc}
    */
-  protected function getDefaultOperations(EntityInterface $entity, CacheableMetadata $cacheability) {
-    $operations = parent::getDefaultOperations($entity, $cacheability);
+  protected function getDefaultOperations(EntityInterface $entity, ?CacheableMetadata $cacheability = NULL) {
+    $operations = parent::getDefaultOperations($entity, $cacheability ?? new CacheableMetadata());
     $destination = $this->redirectDestination->getAsArray();
     foreach ($operations as $key => $operation) {
       $operations[$key]['query'] = $destination;
